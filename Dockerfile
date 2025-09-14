@@ -2,32 +2,35 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Cache-busting arg to force rebuilds on Railway
+# Cache-busting arg to force Railway to rebuild layers when changed
 ARG APP_BUILD_ID
 ENV APP_BUILD_ID=
 
-# Server dependencies
+# Copy server package files and install dependencies
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Server source
+# Copy server source files explicitly
 COPY tsconfig.server.json ./
 COPY src/ ./src/
 COPY server.js ./
 
-# Copy entire client before installing/building client
+# Copy entire client directory (excluding build/node_modules via .dockerignore)
 COPY client/ ./client/
 
-# Client dependencies
+# Prepare and install client dependencies
 WORKDIR /app/client
 RUN npm install
 
-# Build full app (server + client)
+# Debug: ensure CRA public exists
+RUN echo '--- ls /app/client ---' && ls -la /app/client && echo '--- ls /app/client/public ---' && ls -la /app/client/public
+
+# Build full app (server build + CRA build)
 WORKDIR /app
 RUN npm run build
 
-# Expose port used by the server
+# Expose port
 EXPOSE 8080
 
-# Start server
+# Start server (full API server)
 CMD ["node", "dist/server/index.js"]
