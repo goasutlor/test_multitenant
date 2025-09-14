@@ -16,12 +16,8 @@ COPY client/package.json client/package-lock.json ./client/
 WORKDIR /app/client
 RUN npm install
 
-# Copy client source and public explicitly
-COPY client/public ./public
-COPY client/src ./src
-COPY client/tailwind.config.js ./tailwind.config.js
-COPY client/postcss.config.js ./postcss.config.js
-COPY client/tsconfig.json ./tsconfig.json
+# Copy entire client directory (excluding build/node_modules via .dockerignore)
+COPY client/ ./
 
 # Build full app (server build + CRA build)
 WORKDIR /app
