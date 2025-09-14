@@ -1,0 +1,19 @@
+version: 1.0
+runtime: nodejs18
+build:
+  commands:
+    build:
+      - npm cache clean --force
+      - npm install --legacy-peer-deps --force
+      - cd client && npm install --legacy-peer-deps --force
+      - npm run build
+run:
+  runtime-version: 18
+  command: npm start
+  network:
+    port: 5001
+  env:
+    - name: NODE_ENV
+      value: production
+    - name: PORT
+      value: 5001
