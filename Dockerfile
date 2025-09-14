@@ -2,29 +2,32 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy server package files and install dependencies
+# Cache-busting arg to force rebuilds on Railway
+ARG APP_BUILD_ID
+ENV APP_BUILD_ID=
+
+# Server dependencies
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy server source files explicitly
+# Server source
 COPY tsconfig.server.json ./
 COPY src/ ./src/
 COPY server.js ./
 
-# Prepare and install client dependencies
-COPY client/package.json client/package-lock.json ./client/
+# Copy entire client before installing/building client
+COPY client/ ./client/
+
+# Client dependencies
 WORKDIR /app/client
 RUN npm install
 
-# Copy entire client directory (excluding build/node_modules via .dockerignore)
-COPY client/ ./
-
-# Build full app (server build + CRA build)
+# Build full app (server + client)
 WORKDIR /app
 RUN npm run build
 
-# Expose port
+# Expose port used by the server
 EXPOSE 8080
 
-# Start server (full API server)
+# Start server
 CMD ["node", "dist/server/index.js"]
