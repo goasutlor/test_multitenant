@@ -1,18 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDatabase = getDatabase;
-exports.initializeDatabase = initializeDatabase;
-exports.convertQuery = convertQuery;
-exports.dbQuery = dbQuery;
-exports.dbQueryOne = dbQueryOne;
-exports.dbExecute = dbExecute;
+exports.dbExecute = exports.dbQueryOne = exports.dbQuery = exports.convertQuery = exports.initializeDatabase = exports.getDatabase = void 0;
 const pg_1 = require("pg");
 let pool;
 function getDatabase() {
     if (!pool) {
         pool = new pg_1.Pool({
             connectionString: process.env.DATABASE_URL,
-            ssl: false, // Railway internal network doesn't need SSL
+            ssl: false,
             max: 20,
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 10000,
@@ -20,6 +15,7 @@ function getDatabase() {
     }
     return pool;
 }
+exports.getDatabase = getDatabase;
 async function initializeDatabase() {
     const db = getDatabase();
     try {
@@ -41,6 +37,7 @@ async function initializeDatabase() {
         console.log('⚠️  Continuing without database initialization');
     }
 }
+exports.initializeDatabase = initializeDatabase;
 // Map of known lowercased column names to the camelCase names expected by the app
 const COLUMN_NAME_MAP = {
     // users
@@ -209,6 +206,7 @@ function convertQuery(query, params = []) {
     const convertedQuery = query.replace(/\?/g, () => `$${paramIndex++}`);
     return { query: convertedQuery, params };
 }
+exports.convertQuery = convertQuery;
 // Helper function for database operations
 async function dbQuery(query, params = []) {
     const db = getDatabase();
@@ -222,11 +220,13 @@ async function dbQuery(query, params = []) {
         throw error;
     }
 }
+exports.dbQuery = dbQuery;
 // Helper function for single row queries
 async function dbQueryOne(query, params = []) {
     const rows = await dbQuery(query, params);
     return rows[0] || null;
 }
+exports.dbQueryOne = dbQueryOne;
 // Helper function for insert/update operations
 async function dbExecute(query, params = []) {
     const db = getDatabase();
@@ -240,4 +240,5 @@ async function dbExecute(query, params = []) {
         throw error;
     }
 }
+exports.dbExecute = dbExecute;
 //# sourceMappingURL=postgres.js.map
