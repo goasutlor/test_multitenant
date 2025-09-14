@@ -1,5 +1,0 @@
-[33ma566639[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mstaging[m[33m, [m[1;31morigin/staging[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix TypeScript error and add Public Tenant Directory API
-[33me21a222[m Add Global Admin and Tenant Protected Routes with Security Improvements
-[33me8d562e[m[33m ([m[1;31morigin/main[m[33m)[m Create separate Backup & Restore page with Google Drive folder selection, real-time backup status tracking, and improved authentication handling
-[33mb0a0a16[m Add GitHub Actions workflow for automatic deployment to AWS App Runner
-[33md955717[m Fix authentication issues and form warnings in Tenant Functional Test: Add token checks, proper form structure, and authentication warnings
